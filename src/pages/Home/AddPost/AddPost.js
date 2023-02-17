@@ -1,25 +1,112 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
 import { FaUpload } from "react-icons/fa";
+import { useQuery } from 'react-query';
+import { AuthContext } from '../../../AuthContext/AuthProvider';
 
 const AddPost = () => {
+    const {user} = useContext(AuthContext);
+    const { register, handleSubmit,reset } = useForm();
+    const imgbbApi = process.env.REACT_APP_imgbb_key;
+    const [makeDisable,setMakeDisable]=useState(false);
+    const { data: blogs, isLoading, refetch } = useQuery({
+        queryKey:['blogs'],
+        queryFn: async () => {
+            const res = await fetch(`https://developer-society-server.vercel.app/blogs`);
+            const data = await res.json();
+            return data;
+        }
+    })
+    const handlePost = data =>{
+        if (!user) {
+            toast.error('Please SignIn First');
+            return;
+        }
+        setMakeDisable(true);
+        if (data.thumbnail.length > 0) {
+            const image = data.image[0];
+            const formData = new FormData();
+            formData.append('image', image);
+            fetch(`https://api.imgbb.com/1/upload?key=${imgbbApi}`, {
+                method: 'POST',
+                body: formData
+            })
+                .then(res => res.json())
+                .then(imgData => {
+                    console.log(imgData.data.url);
+                    const userDetails = {
+                        ...data,
+                        image: imgData.data.url,
+                        regEmail: user?.email,
+                        media:true,
+                    }
+                    fetch('https://developer-society-server.vercel.app/blogs', {
+                        method: 'POST',
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        body: JSON.stringify(userDetails)
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.acknowledged) {
+                                reset();
+                                toast.success('insert Post successfully');
+                                refetch();
+                                setMakeDisable(false);
+                            }
+                        })
+                        .catch(error => console.error(error))
+                })
+
+        }
+        else {
+            const userDetails = {
+                ...data,
+                regEmail: user?.email,
+                media:false,
+            }
+            fetch('https://developer-society-server.vercel.app/blogs', {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify(userDetails)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.acknowledged) {
+                        reset();
+                        toast.success('insert Post successfully');
+                        refetch();
+                        setMakeDisable(false)
+                    }
+                })
+                .catch(error => console.error(error))
+
+        }
+    }
     return (
         <div className='px-3 mx-auto py-10'>
             <div className="flex justify-between items-center max-w-[1100px] mx-auto lg:flex-row md:flex-row flex-col-reverse">
                 <div className='lg:w-[56%] md:w-[56%] w-full px-9 py-6 shadow-lg bg-white'>
-                    <form>
+                    <form onSubmit={handleSubmit(handlePost)}>
                         <div className="form-control">
-                            <input type="file" name="uploadfile" id="img" style={{ display: "none" }} />
+                            <input  {...register("thumbnail")} type="file" name="uploadfile" id="img" style={{ display: "none" }} />
                             <label for="img" className='text-center'>
                                 <span className='flex justify-center text-3xl'> <FaUpload></FaUpload></span>
                                 Click me to upload file
                             </label>
 
                         </div>
+                        <input {...register("title")} type="text" placeholder='Post Title' className='my-3 h-[30px] input input-bordered border-spacing-2 block w-[100%]' />
+
                         <div>
-                            <textarea className="textarea textarea-bordered w-full h-[180px] mt-3" placeholder="Type here....."></textarea>
+                            <textarea  {...register("content")} className="textarea textarea-bordered w-full h-[180px] mt-3" placeholder="Type here....."></textarea>
                         </div>
                         <div className="form-control mt-6">
-                            <button type='submit' className="btn btn-primary">POST</button>
+                            <button disabled={makeDisable} type='submit' className="btn btn-primary">POST</button>
                         </div>
                     </form>
 

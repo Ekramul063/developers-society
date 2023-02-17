@@ -14,13 +14,13 @@ const Navbar = () => {
     const navLink = 
     <React.Fragment>
        <li> <Link to={'/'}>Home</Link></li>
-       <li> <Link to={'/'}>about</Link></li>
-       <li> <Link to={'/'}>media</Link></li>
+       <li> <Link to={'/about'}>about</Link></li>
+       <li> <Link to={'/media'}>media</Link></li>
 
     </React.Fragment>;
     return (
         <div>
-            <div className="navbar bg-[#000000db]">
+            <div className="navbar bg-[#000000db] text-[#ffffffe5]">
                 <div className="navbar-start">
                     <div className="dropdown">
                         <label tabIndex={0} className="btn btn-ghost lg:hidden">

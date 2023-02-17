@@ -4,6 +4,8 @@ import Main from '../layouts/Main/Main';
 import Home from '../pages/Home/Home';
 import SignIn from '../pages/SignIn/SignIn';
 import SignUp from '../pages/SignUp/SignUp';
+import About from '../pages/About/About';
+import Media from '../pages/Media/Media';
 
 const router = createBrowserRouter([
    {
@@ -13,7 +15,15 @@ const router = createBrowserRouter([
         {
             path: '/',
             element:<Home></Home>
-        }
+        },
+        {
+            path:'/about',
+            element:<About></About>
+        },
+        {
+            path:'/media',
+            element:<Media></Media>
+        },
     ]
    },
    {
