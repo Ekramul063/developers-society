@@ -6,10 +6,10 @@ const TextBlogsCard = ({ blog }) => {
         
             <div className="card w-96 bg-base-100 shadow-xl">
                 <div className="card-body">
-                    <h2 className="card-title">{title}</h2>
-                    <p>{content.slice(0,60)}...</p>
+                    {title&&<h2 className="card-title">{title}</h2>}
+                   {content&& <p>{content.slice(0,200)} ......</p>}
                     <div className="card-actions justify-end">
-                        <button className="btn btn-primary">Buy Now</button>
+                        <button className="btn btn-primary">Details</button>
                     </div>
                 </div>
             </div>

@@ -23,8 +23,16 @@ const AddPost = () => {
             toast.error('Please SignIn First');
             return;
         }
-        setMakeDisable(true);
-        if (data.thumbnail.length > 0) {
+        console.log(data.image.length,data);
+        
+        // if((data.image.length < 1 )|| data.content ===''){
+        //     toast.error('No content to post');
+        //     return;
+        // }
+         
+
+        if (data.image.length > 0) {
+            setMakeDisable(true);
             const image = data.image[0];
             const formData = new FormData();
             formData.append('image', image);
@@ -34,6 +42,7 @@ const AddPost = () => {
             })
                 .then(res => res.json())
                 .then(imgData => {
+                    console.log(imgData)
                     console.log(imgData.data.url);
                     const userDetails = {
                         ...data,
@@ -41,6 +50,7 @@ const AddPost = () => {
                         regEmail: user?.email,
                         media:true,
                     }
+                    console.log(userDetails);
                     fetch('https://developer-society-server.vercel.app/blogs', {
                         method: 'POST',
                         headers: {
@@ -62,6 +72,7 @@ const AddPost = () => {
 
         }
         else {
+            setMakeDisable(true);
             const userDetails = {
                 ...data,
                 regEmail: user?.email,
@@ -93,8 +104,8 @@ const AddPost = () => {
                 <div className='lg:w-[56%] md:w-[56%] w-full px-9 py-6 shadow-lg bg-white'>
                     <form onSubmit={handleSubmit(handlePost)}>
                         <div className="form-control">
-                            <input  {...register("thumbnail")} type="file" name="uploadfile" id="img" style={{ display: "none" }} />
-                            <label for="img" className='text-center'>
+                            <input  {...register("image")} type="file" id="img" style={{ display: "none" }} />
+                            <label htmlFor="img" className='text-center'>
                                 <span className='flex justify-center text-3xl'> <FaUpload></FaUpload></span>
                                 Click me to upload file
                             </label>

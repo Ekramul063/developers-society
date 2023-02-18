@@ -6,6 +6,7 @@ import SignIn from '../pages/SignIn/SignIn';
 import SignUp from '../pages/SignUp/SignUp';
 import About from '../pages/About/About';
 import Media from '../pages/Media/Media';
+import PostDetails from '../pages/PostDetails/PostDetails';
 
 const router = createBrowserRouter([
    {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
         {
             path:'/media',
             element:<Media></Media>
+        },
+        {
+            path:'/post-details',
+            element:<PostDetails></PostDetails>
         },
     ]
    },
